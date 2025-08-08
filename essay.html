@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Essay Checking | Ascendia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fefefe;
+      color: #333;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      color: #3A0CA3;
+    }
+    a {
+      text-decoration: none;
+      color: #3A0CA3;
+    }
+    form {
+      max-width: 600px;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    textarea, input[type=email], input[type=file] {
+      width: 100%;
+      padding: 10px;
+      margin: 0.5rem 0 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #3A0CA3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2a0787;
+    }
+    .section-title {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    #text-response, #file-response {
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Submit Your Essay</h1>
+    <a href="ascendia_main_page_updated.html">⬅ Back to Home</a>
+  </header>
+
+  <div>
+    <div class="section-title">Option 1: Paste Essay</div>
+    <form id="essay-form">
+      <input type="email" id="email" placeholder="Your email" required />
+      <textarea id="essay" rows="8" placeholder="Paste your essay here..." required></textarea>
+      <button type="submit">Submit Essay</button>
+    </form>
+    <div id="text-response"></div>
+  </div>
+
+  <div>
+    <div class="section-title">Option 2: Upload Essay File (.pdf or .docx)</div>
+    <form id="file-form" enctype="multipart/form-data">
+      <input type="email" id="file-email" placeholder="Your email" required />
+      <input type="file" id="essay-file" accept=".pdf,.docx" required />
+      <button type="submit">Upload File</button>
+    </form>
+    <div id="file-response"></div>
+  </div>
+
+  <script src="essay.js"></script>
+</body>
+</html>
+"""
