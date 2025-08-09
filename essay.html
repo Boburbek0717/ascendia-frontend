@@ -4,91 +4,349 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Essay Checking | Ascendia</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <style>
+    :root{
+      --bg1: #0f172a; /* deep navy */
+      --accent: #7c3aed; /* purple */
+      --muted: #94a3b8;
+      --card: rgba(255,255,255,0.03);
+      --glass: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;}
     body {
-      font-family: 'Inter', sans-serif;
-      background: #fefefe;
-      color: #333;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      margin:0;
+      color: #e6eef8;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent 6%),
+                  radial-gradient(800px 400px at 90% 90%, rgba(14,165,233,0.06), transparent 5%),
+                  linear-gradient(180deg, var(--bg1) 0%, #071028 100%);
       padding: 2rem;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
+
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:2rem;
+      align-items:start;
     }
-    h1 {
-      color: #3A0CA3;
+
+    header{
+      grid-column:1/-1;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      margin-bottom: .25rem;
     }
-    a {
-      text-decoration: none;
-      color: #3A0CA3;
+    header h1{font-size:1.6rem;margin:0;color:var(--accent);letter-spacing:0.2px}
+    header p{margin:0;color:var(--muted);font-size:0.95rem}
+    header a{color:inherit;text-decoration:none;background:transparent;padding:.35rem .6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.04)}
+
+    /* main card */
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      padding:1.25rem;
+      border-radius:14px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+      backdrop-filter: blur(6px);
+      animation: floatIn .45s ease both;
     }
-    form {
-      max-width: 600px;
-      margin-bottom: 2rem;
-      padding: 1.5rem;
-      background: #f9f9f9;
-      border-radius: 8px;
-      border: 1px solid #ddd;
+
+    @keyframes floatIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+    .form-row{display:flex;gap:1rem;align-items:flex-start}
+    form{width:100%}
+
+    input[type=email], textarea, input[type=file]{
+      width:100%;
+      padding:.8rem;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.06);
+      background:transparent;color:inherit;font-size:0.95rem;
+      resize:vertical;min-height:120px;
     }
-    textarea, input[type=email], input[type=file] {
-      width: 100%;
-      padding: 10px;
-      margin: 0.5rem 0 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+    label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.35rem}
+
+    .row-split{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+    .btn{
+      display:inline-flex;align-items:center;gap:.6rem;padding:.6rem 1rem;border-radius:10px;border:none;cursor:pointer;font-weight:600;
+      background:linear-gradient(90deg,var(--accent), #5b21b6);color:white;box-shadow:0 6px 18px rgba(124,58,237,0.16);
     }
-    button {
-      background-color: #3A0CA3;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+    .btn:active{transform:translateY(1px)}
+
+    .meta{font-size:.85rem;color:var(--muted);margin-top:.5rem}
+
+    /* sidebar tips */
+    .sidebar{position:sticky;top:1.75rem}
+    .tips{padding:1rem;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .tips h3{margin:.1rem 0 .6rem 0}
+    .tip{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.6rem}
+    .tip .badge{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.03);display:grid;place-items:center;font-weight:700;color:var(--accent)}
+    .tip p{margin:0;color:var(--muted);font-size:.95rem}
+
+    /* band descriptors */
+    .bands{margin-top:1rem}
+    .band{padding:.6rem;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:var(--glass);margin-bottom:.6rem}
+    .band h4{margin:.1rem;color:var(--accent)}
+    .band p{margin:.2rem 0;color:var(--muted);font-size:.9rem}
+
+    /* feedback box */
+    .feedback{margin-top:1rem;padding:1rem;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    .score{font-size:2.2rem;font-weight:700;color:#f8fafc}
+    .prob{color:var(--muted);font-size:.95rem}
+
+    /* utilities */
+    .muted{color:var(--muted)}
+
+    /* mobile */
+    @media (max-width:960px){
+      .container{grid-template-columns:1fr;}
+      .sidebar{position:static}
+      header{flex-direction:column;align-items:flex-start;gap:.5rem}
     }
-    button:hover {
-      background-color: #2a0787;
+
+    /* subtle animated background shapes */
+    .shape{position:fixed;opacity:0.06;pointer-events:none;border-radius:50%;filter:blur(30px)}
+    .shape.a{width:380px;height:380px;top:10%;left:-6%;background:linear-gradient(180deg,#7c3aed,#5b21b6)}
+    .shape.b{width:260px;height:260px;bottom:-6%;right:-4%;background:linear-gradient(180deg,#06b6d4,#0284c7)}
+
+    /* accessibility: respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none!important;transition:none!important}
     }
-    .section-title {
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-    }
-    #text-response, #file-response {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
+
+    /* character counter */
+    .counter{font-size:.85rem;color:var(--muted);text-align:right;margin-top:.25rem}
+
+    /* small accordion */
+    .accordion{border-radius:10px;overflow:hidden}
+    .accordion button{width:100%;text-align:left;padding:.6rem;border:0;background:transparent;color:inherit;cursor:pointer}
+    .acc-panel{max-height:0;overflow:hidden;transition:max-height .28s ease;padding:0 .6rem}
+    .acc-open .acc-panel{padding-top:.4rem;max-height:240px}
+
   </style>
 </head>
 <body>
-  <header>
-    <h1>Submit Your Essay</h1>
-    <a href="ascendia_main_page_updated.html">⬅ Back to Home</a>
-  </header>
+  <div class="shape a" aria-hidden></div>
+  <div class="shape b" aria-hidden></div>
 
-  <div>
-    <div class="section-title">Option 1: Paste Essay</div>
-    <form id="essay-form">
-      <input type="email" id="email" placeholder="Your email" required />
-      <textarea id="essay" rows="8" placeholder="Paste your essay here..." required></textarea>
-      <button type="submit">Submit Essay</button>
-    </form>
-    <div id="text-response"></div>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Essay Checking — Ascendia</h1>
+        <p class="muted">Submit drafts, get focused feedback, and learn the band descriptors that matter.</p>
+      </div>
+      <div>
+        <a href="ascendia_main_page_updated.html">⬅ Back to Home</a>
+      </div>
+    </header>
+
+    <main class="card" aria-labelledby="submit-heading">
+      <h2 id="submit-heading" style="margin:0 0 .6rem 0;color:#dbeafe;font-size:1.1rem">Submit Your Essay</h2>
+
+      <form id="essay-form" class="card" aria-describedby="process-meta">
+        <label for="email">Your email</label>
+        <input type="email" id="email" placeholder="you@example.com" required />
+
+        <label for="essay-text">Paste your essay</label>
+        <textarea id="essay-text" rows="9" placeholder="Paste your essay here (250–400 words recommended)..." required></textarea>
+        <div class="counter" id="char-count">0 characters</div>
+
+        <div style="display:flex;gap:.6rem;margin-top:.6rem;align-items:center">
+          <button class="btn" id="analyze">Get instant tips</button>
+          <button type="submit" class="btn secondary" id="submit-btn">Send for full review</button>
+        </div>
+        <div class="meta" id="process-meta">Instant tips are AI-generated suggestions for improvement (for practice). Full review sends your essay to your tutor team for detailed feedback.</div>
+      </form>
+
+      <div class="feedback" id="feedback" aria-live="polite" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="score" id="predicted-band">—</div>
+            <div class="prob" id="predicted-explain">Estimated band (coherence, lexical resource, grammar).</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">Quick actions</div>
+            <button class="btn secondary" id="download-feedback">Download</button>
+          </div>
+        </div>
+        <div id="quick-suggestions" style="margin-top:0.8rem"></div>
+      </div>
+
+    </main>
+
+    <aside class="sidebar">
+      <div class="tips card" style="padding:1rem">
+        <h3 style="margin:0 .0 .6rem 0;color:#c7b3ff">Quick Tips</h3>
+        <div class="tip">
+          <div class="badge">1</div>
+          <p><strong>Plan first:</strong> spend 3–5 minutes outlining ideas; one idea per paragraph.</p>
+        </div>
+        <div class="tip">
+          <div class="badge">2</div>
+          <p><strong>Use variety:</strong> mix simple and complex sentences; aim for precise vocabulary.</p>
+        </div>
+        <div class="tip">
+          <div class="badge">3</div>
+          <p><strong>Be coherent:</strong> use linking words naturally — avoid repeating the same connectors.</p>
+        </div>
+
+        <div class="bands" aria-hidden="false">
+          <h4 style="margin:.6rem 0 0.3rem 0;color:#e9d5ff">Band descriptors (short)</h4>
+
+          <div class="band">
+            <h4>Band 9</h4>
+            <p>Fully addresses the task with fluent, natural language. Highly accurate grammar and sophisticated vocabulary. Cohesion flawless.</p>
+          </div>
+          <div class="band">
+            <h4>Band 7–8</h4>
+            <p>Answers the task well, clear progression of ideas, occasional errors that don't impede communication; good range of vocabulary.</p>
+          </div>
+          <div class="band">
+            <h4>Band 6</h4>
+            <p>Generally effective but limited flexibility; noticeable inaccuracies in grammar and vocabulary; ideas sometimes unclear.</p>
+          </div>
+          <div class="band">
+            <h4>Band 5 or below</h4>
+            <p>Insufficiently addresses the task; frequent breakdowns in coherence and control of grammar and vocabulary.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:.6rem">
+          <div class="muted" style="font-size:.9rem;margin-bottom:.4rem">Common checklist</div>
+          <ul style="margin:0 0 0 1rem;color:var(--muted);font-size:.9rem">
+            <li>Clear thesis statement</li>
+            <li>2–4 supporting paragraphs</li>
+            <li>Varied sentence structures</li>
+            <li>Accurate punctuation & spelling</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="height:1rem"></div>
+
+      <div class="card" style="padding:1rem">
+        <h3 style="margin:.1rem 0 .6rem 0;color:#c7b3ff">Band Breakdown (click)</h3>
+        <div class="accordion" id="band-acc">
+          <div class="acc-item">
+            <button data-index="1">Band 9 — What it looks like</button>
+            <div class="acc-panel">
+              <p class="muted">Uses fully appropriate and precise vocabulary; ideas are sequenced logically with cohesive devices used naturally and accurately. Grammar is consistent and accurate.</p>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <button data-index="2">Band 7 — Common features</button>
+            <div class="acc-panel">
+              <p class="muted">Clear central topic; good range of vocabulary but occasional inaccuracies; some awkward phrasing or grammar slips under pressure.</p>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <button data-index="3">Band 6 — Watch out for</button>
+            <div class="acc-panel">
+              <p class="muted">Repetitive language, unclear paragraphing, grammar errors more frequent and sometimes meaning is affected.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
   </div>
 
-  <div>
-    <div class="section-title">Option 2: Upload Essay File (.pdf or .docx)</div>
-    <form id="file-form" enctype="multipart/form-data">
-      <input type="email" id="file-email" placeholder="Your email" required />
-      <input type="file" id="essay-file" accept=".pdf,.docx" required />
-      <button type="submit">Upload File</button>
-    </form>
-    <div id="file-response"></div>
-  </div>
+  <script>
+    // small UX & demo logic
+    const essay = document.getElementById('essay-text');
+    const charCount = document.getElementById('char-count');
+    const analyzeBtn = document.getElementById('analyze');
+    const feedbackBox = document.getElementById('feedback');
+    const predictedBand = document.getElementById('predicted-band');
+    const suggestions = document.getElementById('quick-suggestions');
+    const downloadBtn = document.getElementById('download-feedback');
 
-  <script src="essay.js"></script>
+    essay.addEventListener('input', ()=>{
+      const n = essay.value.length;
+      charCount.textContent = n + ' characters';
+    });
+
+    analyzeBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const text = essay.value.trim();
+      if(!text){
+        alert('Please paste your essay first (or type a short paragraph).');
+        return;
+      }
+
+      // Naive heuristic to demo an "estimated band" — this is only illustrative.
+      let score = 6; // base
+      const words = text.split(/\s+/).filter(Boolean).length;
+      if(words > 250) score += 1;
+      const variety = new Set(text.toLowerCase().match(/\b\w+\b/g)).size / Math.max(1, words);
+      if(variety > 0.45) score += 1; // varied vocab
+      const commas = (text.match(/,/g) || []).length;
+      if(commas > 8) score += 1; // complex sentences
+      if(/\btherefore|however|moreover|nevertheless\b/i.test(text)) score += 0.5;
+      if(score > 9) score = 9;
+
+      predictedBand.textContent = (Math.round(score*10)/10).toFixed(1);
+      feedbackBox.style.display = 'block';
+
+      // quick suggestions (simple demo rules)
+      const tips = [];
+      if(words < 220) tips.push('Add more supporting examples — aim for ~250–350 words.');
+      if(variety < 0.35) tips.push('Use synonyms to avoid repetition (e.g., instead of "good" try "beneficial", "advantageous").');
+      if(comma < 3) tips.push('Combine short sentences to improve sentence variety.');
+
+      // Determine grammar suggestion
+      if(/[\.]\s*[a-z]/.test(text)) tips.push('Check sentence starts after full stops — capitalize properly.');
+
+      // Render tips
+      suggestions.innerHTML = '';
+      if(tips.length===0){
+        suggestions.innerHTML = '<div class="muted">No immediate low-hanging issues found. Focus on style and precision.</div>';
+      } else {
+        const ul = document.createElement('ul');
+        ul.style.margin='0';ul.style.paddingLeft='1.1rem';ul.style.color='var(--muted)';
+        tips.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li)});
+        suggestions.appendChild(ul);
+      }
+
+      // Make download content available
+      downloadBtn.onclick = ()=>{
+        const content = `Estimated band: ${predictedBand.textContent}\n\nQuick suggestions:\n${tips.join('\n- ')}`;
+        const blob = new Blob([content],{type:'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');a.href=url;a.download='ascendia_feedback.txt';document.body.appendChild(a);a.click();a.remove();
+      }
+    });
+
+    // Submit form (mock) -- this would normally send to server or to essay.js
+    document.getElementById('essay-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      alert('Full review submitted. In a production site this would send your essay to the tutor team.');
+    });
+
+    // accordion
+    document.querySelectorAll('#band-acc .acc-item button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const item = btn.parentElement;
+        item.classList.toggle('acc-open');
+      })
+    });
+
+    // small safety: avoid heavy animations for reduced-motion
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      document.querySelectorAll('*').forEach(n=>n.style.transition='none')
+    }
+  </script>
 </body>
 </html>
-"""

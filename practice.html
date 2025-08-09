@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ascendia — Task 2 Editing Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --indigo:#3A0CA3;
+      --accent:#f4a261;
+      --slate:#6C757D;
+      --muted:#8b949e;
+      --white:#fff;
+      --glass: rgba(255,255,255,0.95);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter, sans-serif; background: linear-gradient(135deg, #E0F7FA 0%, #FFFDE7 100%);
+      color:var(--slate); -webkit-font-smoothing:antialiased;
+      padding:20px;
+    }
+    .container{max-width:1100px;margin:22px auto;padding:18px;background:var(--glass);border-radius:12px;box-shadow:0 10px 30px rgba(12,18,36,0.06)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    header h1{font-family:Space Grotesk, sans-serif;color:var(--indigo);font-size:1.35rem}
+    header p{color:var(--muted);margin:0;font-size:.95rem}
+    .top-actions{display:flex;gap:8px}
+    .btn{padding:.45rem .85rem;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-secondary{background:transparent;border:2px solid var(--indigo);color:var(--indigo)}
+    .meta{font-size:.92rem;color:var(--muted);margin-top:8px}
+
+    /* layout */
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+    @media (max-width:980px){ .grid{grid-template-columns:1fr} }
+
+    /* prompt card */
+    .card{background:#fff;border-radius:10px;padding:14px;border:1px solid rgba(15,23,42,0.04); box-shadow: 0 6px 18px rgba(16,24,40,0.04)}
+    .prompt-title{font-weight:700;color:var(--indigo);margin-bottom:8px}
+    .original{background:#fafafa;border-radius:8px;padding:12px;margin-bottom:12px;white-space:pre-wrap;font-family:inherit;color:#333;border:1px solid #eee}
+
+    /* editor */
+    .editor { width:100%; height:320px; padding:12px; border-radius:8px; border:1px solid #ddd; font-size:1rem; resize:vertical; font-family:inherit }
+    .controls{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+    .timer{font-weight:800;color:var(--indigo);font-size:1.1rem;margin-left:6px}
+    .hint-list{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .hint{background:#fff6eb;border-left:4px solid #ffd8b3;padding:10px;border-radius:6px;color:#6b4b2a}
+
+    /* right column */
+    .sidebar{display:flex;flex-direction:column;gap:12px}
+    .card.small{padding:10px}
+    .muted{color:var(--muted);font-size:.9rem}
+
+    .status{padding:8px 10px;border-radius:8px;background:linear-gradient(180deg,#f9fff8,#f0fff2);color:#0b6b2b;font-weight:700;font-size:.95rem}
+    .log{font-size:.88rem;color:#555;padding:8px;background:#fcfcfc;border-radius:6px;border:1px dashed #eee;height:120px;overflow:auto}
+
+    /* subtle focus */
+    textarea:focus, .editor:focus {outline:3px solid rgba(58,12,163,0.08)}
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <header>
+      <div>
+        <h1>Task-2 Editing Practice</h1>
+        <p class="meta">Fix a realistic Band-5 essay and practice improving Task Response, cohesion, structure, and grammar.</p>
+      </div>
+      <div class="top-actions">
+        <a class="btn btn-secondary" href="main_page_updated.html">← Back</a>
+        <button class="btn btn-primary" id="submit-btn">Submit attempt</button>
+      </div>
+    </header>
+
+    <div class="grid" aria-live="polite">
+      <section aria-label="Practice editor" >
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div class="prompt-title" id="prompt-title">Prompt</div>
+              <div class="muted" id="prompt-meta">Sample Band-5 • Topic: Education</div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Time</div>
+              <div class="timer" id="timer-display">--:--</div>
+            </div>
+          </div>
+
+          <details open style="margin-top:12px;">
+            <summary style="font-weight:700;cursor:pointer">Original essay (Band-5 example)</summary>
+            <div class="original" id="original-text"></div>
+          </details>
+
+          <div class="controls" role="region" aria-label="Editor controls" style="margin-top:10px">
+            <label style="display:inline-flex;align-items:center;gap:8px" class="muted">
+              <input type="checkbox" id="show-original-toggle" checked /> Show original above
+            </label>
+
+            <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+              <button class="btn btn-secondary" id="clear-editor">Clear</button>
+              <button class="btn" id="download-btn">Download</button>
+            </div>
+          </div>
+
+          <textarea id="editor" class="editor" placeholder="Edit the essay here — improve structure, clarity and grammar."></textarea>
+
+          <div style="display:flex;gap:10px;margin-top:10px;align-items:center">
+            <label class="muted">Hints</label>
+            <button class="btn" id="reveal-hint">Reveal hint</button>
+            <div class="muted" id="hints-used">Hints used: 0</div>
+          </div>
+
+          <div class="hint-list" id="hint-box" aria-live="polite"></div>
+
+          <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+            <div class="muted">Autosave: <span id="autosave-status">idle</span></div>
+            <div style="margin-left:auto" class="muted">Saved attempts are stored locally if the server is unavailable.</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sidebar" aria-label="Practice sidebar">
+        <div class="card small">
+          <div style="font-weight:700;margin-bottom:6px">Settings</div>
+          <div class="muted">Mode: <strong id="mode-label">Task-2 editing</strong></div>
+          <div class="muted" style="margin-top:6px">Time limit: <strong id="time-limit-label">30m</strong></div>
+          <div class="muted" style="margin-top:6px">Hints: <strong id="hints-label">Enabled</strong></div>
+        </div>
+
+        <div class="card small">
+          <div style="font-weight:700;margin-bottom:6px">Quick tips</div>
+          <ul style="margin:0;padding-left:18px;color:#555">
+            <li>Read the prompt carefully — note the task words.</li>
+            <li>Make a quick plan (2–3 min).</li>
+            <li>Improve topic sentences and linking phrases.</li>
+          </ul>
+        </div>
+
+        <div class="card small">
+          <div style="font-weight:700;margin-bottom:6px">Attempt log</div>
+          <div class="log" id="attempt-log">No submissions yet.</div>
+        </div>
+
+        <div class="card small">
+          <div style="font-weight:700;margin-bottom:6px">Submission status</div>
+          <div id="submit-status" class="muted">Not submitted</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+<script>
+/* practice.html — client-only editor + timer + autosave + local submission fallback
+   - Reads settings from localStorage key 'ascendia_practice_settings' or URL query params
+   - Loads a sample Band-5 prompt from the embedded array
+   - Autosaves edits to localStorage
+   - Submit tries POST to /practice-attempt; if fails, stores locally in 'ascendia_offline_attempts'
+*/
+
+(() => {
+  // --- sample Band-5 prompts (start small; expand on server later) ---
+  const SAMPLE_PROMPTS = [
+    {
+      id: 'p1',
+      title: 'Education and Technology',
+      meta: 'Band-5 example — Topic: Education',
+      prompt: `Some people argue that technology in education creates a distance between student and teacher and causes more harm than good. Others think technology helps learning and should be used more. Discuss both views and give your opinion.`,
+      band5_text: `Technology is everywhere in classroom these days. Many students use laptops and phones and some teachers use online classes. Whilst technology offer many advantage like acces to information quickly, it also has bad effect. Student sometimes become lazy because of reliance on devices. Also they less speak to teacher and peers. So i think there should be balance between technology and traditional teaching. Teachers must guide students and technology should be used when necessary.`
+      , hints: [
+        "Band-5 problems: weak paragraphing, grammar mistakes (articles/plurals), limited development of ideas.",
+        "Start by writing a clear thesis sentence and plan two or three supporting paragraphs.",
+        "Check subject-verb agreement and article use: 'technology offers', 'the classroom'."
+      ]
+    },
+    {
+      id: 'p2',
+      title: 'Unhealthy Lifestyles',
+      meta: 'Band-5 example — Topic: Health',
+      prompt: `In many countries, the rate of obesity among children is increasing. What are the causes, and what can be done to tackle this problem?`,
+      band5_text: `Childhood obesity is growing problem. Many parents feed children with fast food and many children prefer to play games at home instead exercise. Schools dont give enough time for PE. The result is health problem like diabetes. To solve this, parents should control diet and schools must give more sport lessons. Government should also make rules for fast food advertisements.`,
+      hints: [
+        "Weak cohesion between sentences; run-on or short choppy sentences.",
+        "Add supporting examples and consequences (e.g., diabetes, social impact).",
+        "Improve linking: 'Because', 'Therefore', 'As a result'."
+      ]
+    },
+    {
+      id: 'p3',
+      title: 'Work-Life Balance',
+      meta: 'Band-5 example — Topic: Work',
+      prompt: `Some people say employees should work from home more often. Do you agree or disagree? Give reasons and examples.`,
+      band5_text: `Working from home is good for many people. It save time for travel and people can work in comfortable place. But there are some issues like lack of communication and some workers feel lonely. Also some jobs cannot be done from home. I think company can allow flexible work sometimes but not everyday.`,
+      hints: [
+        "Band-5 hallmark: short, underdeveloped paragraphs — expand with examples.",
+        "Balance view: give clear opinion and reasons with specific examples.",
+        "Watch small grammar: 'it saves', 'people feel lonely'."
+      ]
+    },
+    {
+      id: 'p4',
+      title: 'Public Transport',
+      meta: 'Band-5 example — Topic: Environment',
+      prompt: `Some people think that governments should invest more in public transport to reduce traffic and pollution. To what extent do you agree or disagree?`,
+      band5_text: `Investing in public transport is important. Many city have traffic and air pollution. Public buses and trains can reduce cars on road. However it cost a lot and some area dont have enough population to use them. Governments must plan carefully and also improve quality to attract passenger.`,
+      hints: [
+        "Develop reasons and counterarguments; Band-5 texts often lack depth.",
+        "Add data/examples to support claims where possible, even hypothetical.",
+        "Check plural/singular: 'many cities have', 'attract passengers'."
+      ]
+    },
+    {
+      id: 'p5',
+      title: 'Tourism Economy',
+      meta: 'Band-5 example — Topic: Economy',
+      prompt: `Some countries rely heavily on tourism. What problems can this cause and how can they be reduced?`,
+      band5_text: `Tourism brings money to country but also problems. For example overcrowd in city, damage to natural places and local life style changes. To reduce problems, government must limit tourist number and build infrastructure. Also educating tourist about behaviour help.`,
+      hints: [
+        "Common errors: word choice and collocations ('overcrowding', 'local lifestyle').",
+        "Explain solutions with examples: entrance fees, permits, infrastructure.",
+        "Improve cohesion by using linking devices like 'for instance' and 'in addition'."
+      ]
+    }
+  ];
+
+  // DOM elements
+  const originalEl = document.getElementById('original-text');
+  const promptTitleEl = document.getElementById('prompt-title');
+  const promptMetaEl = document.getElementById('prompt-meta');
+  const editorEl = document.getElementById('editor');
+  const timerDisplay = document.getElementById('timer-display');
+  const hintsUsedEl = document.getElementById('hints-used');
+  const hintBox = document.getElementById('hint-box');
+  const revealHintBtn = document.getElementById('reveal-hint');
+  const submitBtn = document.getElementById('submit-btn');
+  const autosaveStatus = document.getElementById('autosave-status');
+  const attemptLog = document.getElementById('attempt-log');
+  const submitStatus = document.getElementById('submit-status');
+  const timeLimitLabel = document.getElementById('time-limit-label');
+  const hintsLabel = document.getElementById('hints-label');
+  const modeLabel = document.getElementById('mode-label');
+
+  // state
+  let exercise = null;
+  let selectedTimeMin = 30;
+  let hintsEnabled = true;
+  let hintsUsed = 0;
+  let hintIndex = 0;
+  let timerRemaining = 0; // seconds
+  let timerInterval = null;
+  let editorAutosaveTimer = null;
+  const AUTOSAVE_KEY_PREFIX = 'ascendia_practice_draft_';
+  const ATTEMPTS_KEY = 'ascendia_offline_attempts';
+
+  // helpers
+  function getSettingsFromStorageOrQuery(){
+    // priority: localStorage settings -> query params -> defaults
+    let settings = {};
+    try {
+      const raw = localStorage.getItem('ascendia_practice_settings');
+      if(raw){ settings = JSON.parse(raw); }
+    } catch(e){}
+    const qp = new URLSearchParams(window.location.search);
+    if(qp.has('time')) settings.time = parseInt(qp.get('time'),10) || settings.time;
+    if(qp.has('hints')) settings.hints = qp.get('hints') === '1' || settings.hints;
+    if(qp.has('id')) settings.id = qp.get('id');
+    return settings;
+  }
+
+  function pickPrompt(id){
+    if(id){
+      const found = SAMPLE_PROMPTS.find(p=>p.id===id);
+      if(found) return found;
+    }
+    // random pick
+    return SAMPLE_PROMPTS[Math.floor(Math.random()*SAMPLE_PROMPTS.length)];
+  }
+
+  function startTimer(seconds){
+    timerRemaining = seconds;
+    updateTimerDisplay();
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(()=>{
+      if(timerRemaining>0){ timerRemaining--; updateTimerDisplay(); }
+      else { clearInterval(timerInterval); timerInterval=null; onTimerEnd(); }
+    },1000);
+  }
+  function pauseTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } }
+  function resetTimer(seconds){ pauseTimer(); timerRemaining=seconds; updateTimerDisplay(); }
+
+  function updateTimerDisplay(){
+    const mm = String(Math.floor(timerRemaining/60)).padStart(2,'0');
+    const ss = String(timerRemaining%60).padStart(2,'0');
+    timerDisplay.textContent = `${mm}:${ss}`;
+  }
+  function onTimerEnd(){
+    submitStatus.textContent = 'Time is up — attempt auto-saved locally.';
+    submitStatus.style.color = '#b44';
+    saveAttemptLocal('auto-timer');
+  }
+
+  function autosaveDraft(){
+    const key = AUTOSAVE_KEY_PREFIX + exercise.id;
+    const payload = {
+      text: editorEl.value,
+      lastSaved: new Date().toISOString(),
+      hintsUsed,
+      timeRemaining: timerRemaining
+    };
+    localStorage.setItem(key, JSON.stringify(payload));
+    autosaveStatus.textContent = 'saved';
+    setTimeout(()=>{ autosaveStatus.textContent = 'idle'; }, 900);
+  }
+
+  function loadDraft(){
+    const key = AUTOSAVE_KEY_PREFIX + exercise.id;
+    try {
+      const raw = localStorage.getItem(key);
+      if(!raw) return;
+      const p = JSON.parse(raw);
+      if(p && p.text) editorEl.value = p.text;
+      if(p && typeof p.hintsUsed === 'number') { hintsUsed = p.hintsUsed; hintsUsedEl.textContent = `Hints used: ${hintsUsed}`; }
+    } catch(e){}
+  }
+
+  function renderPrompt(){
+    promptTitleEl.textContent = exercise.title;
+    promptMetaEl.textContent = exercise.meta;
+    originalEl.textContent = exercise.band5_text;
+    // labels
+    timeLimitLabel.textContent = (selectedTimeMin ? `${selectedTimeMin}m` : 'No limit');
+    hintsLabel.textContent = hintsEnabled ? 'Enabled' : 'Disabled';
+    // load any saved draft
+    loadDraft();
+  }
+
+  function revealHint(){
+    if(!hintsEnabled) return;
+    const h = exercise.hints[hintIndex] || 'No more hints.';
+    const div = document.createElement('div');
+    div.className = 'hint';
+    div.textContent = h;
+    hintBox.appendChild(div);
+    hintIndex = Math.min(exercise.hints.length-1, hintIndex+1);
+    hintsUsed++;
+    hintsUsedEl.textContent = `Hints used: ${hintsUsed}`;
+  }
+
+  function downloadEdited(){
+    const text = editorEl.value;
+    const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ascendia_practice_${exercise.id}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function saveAttemptLocal(reason){
+    const attempts = JSON.parse(localStorage.getItem(ATTEMPTS_KEY) || '[]');
+    const attempt = {
+      id: 'a_' + Date.now(),
+      exerciseId: exercise.id,
+      promptTitle: exercise.title,
+      originalText: exercise.band5_text,
+      finalText: editorEl.value,
+      startedAt: new Date().toISOString(),
+      timeLeft: timerRemaining,
+      timeLimitMin: selectedTimeMin,
+      hintsUsed,
+      reason: reason || 'manual-save'
+    };
+    attempts.push(attempt);
+    localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(attempts));
+    updateAttemptLog();
+    return attempt;
+  }
+
+  function updateAttemptLog(){
+    const attempts = JSON.parse(localStorage.getItem(ATTEMPTS_KEY) || '[]');
+    if(attempts.length===0){ attemptLog.textContent = 'No submissions yet.'; }
+    else {
+      attemptLog.innerHTML = attempts.slice().reverse().map(a=>{
+        return `<div style="margin-bottom:8px"><strong>${a.id}</strong><div class="muted">${a.promptTitle} • hints:${a.hintsUsed} • left:${a.timeLeft}s</div></div>`;
+      }).join('');
+    }
+  }
+
+  async function trySendToServer(attempt){
+    // Try POST; server endpoint optional. If fails, leave local copy.
+    try {
+      const res = await fetch('/practice-attempt', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(attempt)
+      });
+      if(!res.ok) throw new Error('server responded ' + res.status);
+      const data = await res.json();
+      submitStatus.textContent = 'Submitted — instructor will review';
+      submitStatus.style.color = '#0a6b3b';
+      // remove local attempt if needed (keep for record)
+      return true;
+    } catch(e){
+      console.warn('Submit failed, saved locally', e);
+      submitStatus.textContent = 'Saved locally (server not reachable)';
+      submitStatus.style.color = '#b44';
+      return false;
+    }
+  }
+
+  // UI wiring
+  document.getElementById('show-original-toggle').addEventListener('change', function(){
+    originalEl.parentElement.style.display = this.checked ? 'block' : 'none';
+  });
+
+  document.getElementById('clear-editor').addEventListener('click', ()=>{ if(confirm('Clear edited text?')) editorEl.value=''; autosaveDraft(); });
+
+  document.getElementById('download-btn').addEventListener('click', downloadEdited);
+
+  revealHintBtn.addEventListener('click', () => {
+    revealHint();
+    autosaveDraft();
+  });
+
+  // autosave every 8s if editor changed
+  editorEl.addEventListener('input', () => {
+    autosaveStatus.textContent = 'saving...';
+    clearTimeout(editorAutosaveTimer);
+    editorAutosaveTimer = setTimeout(()=>{ autosaveDraft(); }, 900);
+  });
+
+  // submit
+  submitBtn.addEventListener('click', async ()=>{
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    const attempt = saveAttemptLocal('manual-submit');
+    await trySendToServer(attempt);
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submitted';
+    // provide UX feedback
+    setTimeout(()=>{ submitBtn.textContent = 'Submit attempt'; }, 1500);
+  });
+
+  // initialization
+  function init(){
+    const settings = getSettingsFromStorageOrQuery();
+    selectedTimeMin = settings.time || selectedTimeMin;
+    hintsEnabled = (settings.hints === undefined) ? hintsEnabled : !!settings.hints;
+    // pick prompt (if id given, pick specific)
+    exercise = pickPrompt(settings.id);
+    // set initial timer
+    timerRemaining = (selectedTimeMin>0) ? selectedTimeMin*60 : 0;
+    updateTimerDisplay();
+    // render prompt
+    renderPrompt();
+    // labels
+    modeLabel.textContent = 'Task-2 editing';
+    timeLimitLabel.textContent = `${selectedTimeMin}m`;
+    hintsLabel.textContent = hintsEnabled ? 'Enabled' : 'Disabled';
+    // attempt log
+    updateAttemptLog();
+
+    // start timer automatically
+    if(timerRemaining>0) startTimer(timerRemaining);
+
+    // keyboard shortcut: Ctrl+Enter to submit
+    window.addEventListener('keydown', (e) => {
+      if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+        submitBtn.click();
+      }
+    });
+
+    // tune autosave status initially
+    autosaveStatus.textContent = 'idle';
+  }
+
+  init();
+
+})();
+</script>
+</body>
+</html>

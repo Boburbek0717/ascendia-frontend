@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascendia — Rise with English</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo: #3A0CA3;
+      --gold: #FFBE0B;
+      --slate: #6C757D;
+      --white: #FFFFFF;
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --accent: #f4a261;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-body);
+      color: var(--slate);
+      background: linear-gradient(135deg, #E0F7FA 0%, #FFFDE7 100%);
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.3;
+      transform: rotate(45deg);
+    }
+    body::before {
+      width: 300px; height: 300px; background: var(--gold);
+      top: -100px; right: -100px;
+    }
+    body::after {
+      width: 400px; height: 400px; background: var(--indigo);
+      bottom: -150px; left: -150px;
+      opacity: 0.2;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(255,255,255,0.9);
+      z-index: 10;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      color: var(--indigo);
+      text-decoration: none;
+    }
+    .nav-links { list-style: none; display: flex; gap: 1.5rem; }
+    .nav-links a { text-decoration: none; font-weight: 600; color: var(--slate); transition: color .18s; }
+    .nav-links a:hover { color: var(--indigo); }
+
+    .actions { display: flex; gap: 0.5rem; }
+    .btn { padding: 0.55rem 1.2rem; border-radius: 0.375rem; font-weight: 600; cursor: pointer; border: none; }
+    .btn-signup { background: var(--gold); color: var(--indigo); }
+    .btn-login { background: transparent; color: var(--indigo); border: 2px solid var(--indigo); }
+    .btn:focus { outline: 3px solid rgba(58,12,163,0.12); outline-offset: 2px; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 6rem 1.25rem;
+      z-index: 2;
+      position: relative;
+      max-width: 980px;
+      margin: 40px auto;
+    }
+    .hero h1 { font-family: var(--font-head); font-size: 3.2rem; color: var(--indigo); margin-bottom: 1rem; line-height: 1.05; }
+    .hero p { font-size: 1.15rem; color: #444; margin: 0 auto 1.6rem; max-width: 720px; }
+    .cta { display:flex; gap:0.9rem; justify-content:center; flex-wrap:wrap; align-items:center; }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+      padding: .85rem 1.4rem;
+      border-radius: 10px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(231,111,81,0.18);
+      text-decoration: none;
+      transition: transform .18s, box-shadow .18s;
+      display:inline-block;
+    }
+    .primary:hover { transform: translateY(-4px); box-shadow:0 14px 36px rgba(231,111,81,0.22); }
+    .secondary { background: transparent; color: var(--indigo); border:2px solid var(--indigo); padding:.6rem 1rem; border-radius:8px; font-weight:700; text-decoration:none; display:inline-block; }
+
+    .micro { display:block; font-size:.88rem; color:#7a8087; margin-top:.6rem; }
+
+    /* trust line */
+    .trust-line { display:flex; gap:.6rem; justify-content:center; align-items:center; color:#7a8087; margin-top:.7rem; font-size:.92rem; }
+
+    /* Place plane at top-right of hero (above text area) */
+    .hero-visual {
+      position: absolute;
+      right: 4%;
+      top: -6%;
+      width: 120px;
+      height: 80px;
+      pointer-events: none;
+      z-index: 1;
+      display: none;
+      transform: translateZ(0);
+    }
+
+    /* Features */
+    .features { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin:2.25rem auto; max-width:1100px; padding:0 1rem; }
+    .card {
+      background: var(--white); width:300px; border-radius:12px; padding:1.15rem; box-shadow:0 6px 20px rgba(16,24,40,0.06);
+      border:1px solid rgba(15,23,42,0.04); text-align:left;
+      opacity:0; transform: translateY(12px); animation: cardIn .5s forwards ease;
+    }
+    .card:nth-child(1){ animation-delay: 0.12s }
+    .card:nth-child(2){ animation-delay: 0.22s }
+    .card:nth-child(3){ animation-delay: 0.32s }
+
+    .card .icon { width:44px; height:44px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:.85rem }
+    .card h3{ color:var(--indigo); margin-bottom:.45rem; font-size:1.05rem }
+    .card p{ color:#555; font-size:.95rem; line-height:1.35 }
+
+    /* Testimonials */
+    .testimonials { max-width:980px; margin:1.75rem auto; padding:1rem; display:flex; gap:1rem; justify-content:center; align-items:stretch; flex-wrap:wrap; }
+    .testimonial {
+      background: rgba(255,255,255,0.95); border-radius:10px; padding:1rem; width:300px; box-shadow:0 6px 18px rgba(16,24,40,0.04);
+      border:1px solid rgba(15,23,42,0.04); opacity:0; transform:translateY(12px); animation: cardIn .45s forwards ease;
+    }
+    .testimonial:nth-child(1){ animation-delay:0.4s }
+    .testimonial:nth-child(2){ animation-delay:0.5s }
+    .testimonial:nth-child(3){ animation-delay:0.6s }
+    .testimonial p{ font-size:.98rem; color:#333; margin-bottom:.6rem }
+    .testimonial .meta{ font-size:.85rem; color:#7a8087 }
+
+    .note { max-width:760px; margin:1.25rem auto; font-size:.92rem; color:#7a8087; text-align:center }
+
+    /* Keyframes for cards/testimonials */
+    @keyframes cardIn {
+      from { opacity:0; transform: translateY(12px) scale(0.995) }
+      to { opacity:1; transform: translateY(0) scale(1) }
+    }
+
+    /* Paper plane animation specifics (subtle) */
+    @keyframes planeFly {
+      0% { transform: translate(0px, 0px) rotate(-12deg) }
+      25% { transform: translate(-8px, -6px) rotate(-18deg) }
+      50% { transform: translate(-16px, -2px) rotate(-12deg) }
+      75% { transform: translate(-8px, 6px) rotate(-6deg) }
+      100% { transform: translate(0px, 0px) rotate(-12deg) }
+    }
+    .plane { width:100%; height:100%; animation: planeFly 3.8s ease-in-out infinite; transform-origin:center; will-change:transform; filter: drop-shadow(0 8px 18px rgba(58,12,163,0.07)); }
+
+    /* subtle floating shadow under plane */
+    .plane-shadow { position:absolute; bottom:-6px; left:12%; width:44px; height:6px; background: rgba(0,0,0,0.06); border-radius:50%; filter: blur(6px); animation: floatUp 3.8s ease-in-out infinite; opacity:0.9 }
+    @keyframes floatUp { 0%{ transform: translateY(0)} 50%{ transform: translateY(-6px)} 100%{ transform: translateY(0)} }
+
+    @media (prefers-reduced-motion: reduce) {
+      .plane, .plane-shadow, .card, .testimonial { animation: none; transform:none; opacity:1 }
+    }
+
+    /* show plane only on medium+ screens */
+    @media (min-width: 920px) {
+      .hero-visual { display:block }
+    }
+
+    /* responsive tweaks */
+    @media (max-width:780px) {
+      .hero h1 { font-size:2.05rem }
+      .card { width:100%; max-width:420px }
+      .hero { margin:18px 12px; padding:2.5rem 1rem }
+      nav { margin:12px; border-radius:8px }
+      .hero-visual { display:none }
+    }
+
+    /* Modal (Practice starter) */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(8,10,20,0.45); display: none; align-items:center; justify-content:center; z-index:50;
+    }
+    .modal {
+      background: white; width: 92%; max-width: 720px; border-radius: 12px; padding: 18px; box-shadow: 0 18px 60px rgba(14,20,40,0.3);
+    }
+    .modal h3 { margin-bottom: 8px; color: var(--indigo); font-family: var(--font-head); }
+    .modal p { color:#444; margin-bottom:12px; }
+    .modal .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+    .time-select { display:flex; gap:8px; align-items:center; }
+    .time-select button { padding:.5rem .75rem; border-radius:8px; border:1px solid #ddd; background:#fafafa; cursor:pointer; }
+    .time-select button.active { background:var(--indigo); color:#fff; border-color:var(--indigo); }
+    .hint-toggle { display:flex; gap:8px; align-items:center; }
+    .modal .actions { display:flex; gap:10px; justify-content:flex-end; }
+    .modal .actions .btn { padding:.5rem .9rem; border-radius:8px; }
+    .modal .hint-note { font-size:.88rem; color:#666; margin-top:6px; }
+    /* small helper */
+    .muted { color:#777; font-size:.92rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#" class="logo">Ascendia</a>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Courses</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="actions">
+      <a href="login.html" class="btn btn-login">Log In</a>
+      <a href="signup.html" class="btn btn-signup">Sign Up</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Master IELTS Task 2 — practice editing & get expert feedback</h1>
+      <p>Train active editing skills: fix realistic Band-5 essays, focus on Task Response, cohesion, and grammar — then submit your improved version for review.</p>
+
+      <div class="cta">
+        <!-- Primary: opens modal to start practice -->
+        <a href="practice.html" class="primary" id="start-practice-btn">Start Task-2 Practice</a>
+
+        <!-- Secondary: essay checking workflow -->
+        <a class="secondary" href="essay.html">Free Essay Check</a>
+      </div>
+
+      <div class="trust-line">
+        <span>✅ Instructor-reviewed tasks</span>
+        <span style="opacity:.5">•</span>
+        <span>Practice, then submit for feedback</span>
+      </div>
+
+      <div class="micro">Choose a timed exercise — work on editing, then submit your improved essay for instructor feedback.</div>
+
+      <!-- Decorative animated plane (positioned top-right of hero, behind text) -->
+      <div class="hero-visual" aria-hidden="true">
+        <svg class="plane" viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <g fill="none" fill-rule="evenodd">
+            <path d="M6 74 L219 18 L142 88 L219 122 Z" fill="#fff" stroke="#3A0CA3" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M142 88 L106 84 L6 74" stroke="#3A0CA3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+            <path d="M106 84 L142 88" stroke="#FFBE0B" stroke-width="2.6" opacity="0.95" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <div class="plane-shadow" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- Compact Quality & CTA block -->
+<section id="quality-compact" aria-labelledby="quality-compact-title" style="max-width:1100px;margin:28px auto;padding:0 16px;">
+  <h2 id="quality-compact-title" style="font-family:Space Grotesk, sans-serif;color:#2b1a7a;font-size:1.3rem;margin-bottom:6px;">What we check — and how we help</h2>
+  <p style="color:#555; max-width:780px;margin-bottom:12px;">Professional, rubric-driven feedback focused on clear, actionable improvements. We highlight exactly what to fix and why.</p>
+
+  <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+    <!-- Capabilities (tiles) -->
+    <div style="flex:1 1 640px; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px;">
+      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);">
+        <strong>Deep Grammar Check</strong>
+        <div style="color:#666;font-size:.92rem;margin-top:6px;">Detailed corrections and short explanations (tenses, articles, prepositions).</div>
+      </div>
+
+      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);">
+        <strong>Task Response & Structure</strong>
+        <div style="color:#666;font-size:.92rem;margin-top:6px;">Checks prompt coverage, paragraph order, and clarity of thesis/support.</div>
+      </div>
+
+      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);">
+        <strong>Coherence & Cohesion</strong>
+        <div style="color:#666;font-size:.92rem;margin-top:6px;">Improves flow and linking phrases to make writing smoother and clearer.</div>
+      </div>
+
+      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);">
+        <strong>Lexical Resource</strong>
+        <div style="color:#666;font-size:.92rem;margin-top:6px;">Vocabulary checks, register suggestions, and alternatives to reduce repetition.</div>
+      </div>
+
+      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);">
+        <strong>Formatting & Conventions</strong>
+        <div style="color:#666;font-size:.92rem;margin-top:6px;">Paragraphing, punctuation, word count and exam-format checks.</div>
+      </div>
+
+      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);">
+        <strong>Actionable Corrections</strong>
+        <div style="color:#666;font-size:.92rem;margin-top:6px;">Corrected wording and 2–4 practical action items to practice next.</div>
+      </div>
+    </div>
+
+    <!-- Compact CTA & turnaround card -->
+    <aside style="flex:0 0 260px;display:flex;flex-direction:column;gap:12px;">
+      <a href="essay.html" class="primary" style="text-align:center;padding:.75rem 1rem;margin-bottom:6px;display:inline-block;">Submit an essay — free</a>
+
+      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);font-size:.93rem;color:#666;">
+        <strong>Turnaround</strong><br/>
+        Typical: <strong>24–72 hours</strong><br/>
+        <span style="font-size:.86rem;color:#888;">Priority review available</span>
+      </div>
+
+      <div style="background:#fff;border-radius:10px;padding:10px;border:1px solid rgba(15,23,42,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);font-size:.9rem;color:#666;">
+        <strong>Reviewed by:</strong><br/>
+        Ascendia instructors — certified test-takers & teachers. <a href="#" style="color:#2b1a7a;text-decoration:underline;font-weight:600;">Meet the team</a>
+      </div>
+
+      <div style="background:linear-gradient(180deg,#f9fafb,#fff);border-radius:10px;padding:10px;border:1px solid rgba(15,23,42,0.04);font-size:.9rem;color:#444;text-align:center;">
+        <strong>Report snapshot</strong>
+        <div style="font-size:.86rem;color:#666;margin-top:6px;">You’ll receive: summary • grammar corrections • 3 action items.</div>
+      </div>
+    </aside>
+  </div>
+</section>
+<!-- END: Compact Quality & CTA block -->
+
+    <section class="features" aria-label="Core offerings">
+      <div class="card" role="article">
+        <div class="icon" style="background:linear-gradient(135deg,#e6f4ff,#dfeaff)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v20" stroke="#3A0CA3" stroke-width="2" stroke-linecap="round"/><path d="M5 9l7-7 7 7" stroke="#3A0CA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>IELTS Mastery</h3>
+        <p>Band-specific strategies, model essays, and speaking practice from an experienced 8.5 scorer.</p>
+      </div>
+
+      <div class="card" role="article">
+        <div class="icon" style="background:linear-gradient(135deg,#fff4e6,#fff0df)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2" stroke="#3A0CA3" stroke-width="2"/><path d="M7 21h10" stroke="#3A0CA3" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h3>SAT Success</h3>
+        <p>Targeted reading & writing drills and test strategies to boost accuracy and timing.</p>
+      </div>
+
+      <div class="card" role="article">
+        <div class="icon" style="background:linear-gradient(135deg,#fff1f0,#fff6f4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3" stroke="#3A0CA3" stroke-width="2"/><path d="M5 21c2-3 6-5 7-5s5 2 7 5" stroke="#3A0CA3" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h3>General English</h3>
+        <p>Grammar, vocabulary and fluency lessons that make English usable and enjoyable.</p>
+      </div>
+    </section>
+
+    <section class="testimonials" aria-label="Student testimonials">
+      <div class="testimonial" role="article">
+        <p>“Ascendia's essay feedback showed me exactly what to fix — my writing improved in weeks.”</p>
+        <div class="meta">— Ali, Uzbekistan · IELTS 6.5 → 7.5</div>
+      </div>
+
+      <div class="testimonial" role="article">
+        <p>“Clear tips and weekly drills. The SAT reading strategy helped me beat time pressure.”</p>
+        <div class="meta">— Maria, Philippines · SAT 1430</div>
+      </div>
+
+      <div class="testimonial" role="article">
+        <p>“I loved the simple lessons and the free essay check — fast, fair, and helpful.”</p>
+        <div class="meta">— Samir, Egypt · Improved fluency</div>
+      </div>
+    </section>
+
+    <div class="note">
+      <strong>How it works:</strong> Choose a timed Task-2 practice → edit the essay in the exercise → submit your improved version for review. <br/>
+      <span style="font-size:.9rem; color:#7a8087">Privacy: Your essay will only be seen by our instructors and is not shared publicly.</span>
+    </div>
+  </main>
+
+  <!-- Practice starter modal (hidden by default) -->
+  <div class="modal-backdrop" id="practice-modal" role="dialog" aria-modal="true" aria-labelledby="practice-title">
+    <div class="modal" role="document">
+      <button id="close-modal" style="float:right;border:none;background:none;font-weight:700;cursor:pointer">✕</button>
+      <h3 id="practice-title">Task-2 Practice — quick editing exercise</h3>
+      <p class="muted">You will receive a realistic Band-5 Task-2 essay with common issues in task response, structure, cohesion, and grammar. Edit to improve; you choose the time limit. After finishing, submit for automated feedback — or request a full instructor review.</p>
+
+      <div class="controls" aria-hidden="false">
+        <div class="time-select" aria-label="Choose time">
+          <label class="muted">Time:</label>
+          <button data-time="15">15m</button>
+          <button data-time="30" class="active">30m</button>
+          <button data-time="45">45m</button>
+          <button data-time="60">60m</button>
+        </div>
+
+        <div class="hint-toggle" aria-hidden="false">
+          <label class="muted">Hints:</label>
+          <label style="display:inline-flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="hint-checkbox" /> <span style="font-size:.95rem">Enable hints</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hint-note">Hints are helpful learning tools. Using hints will be noted in your attempt summary.</div>
+
+      <div class="actions" style="margin-top:14px;">
+        <button id="cancel-modal" class="btn" style="background:#f3f4f6;border:1px solid #e5e7eb">Cancel</button>
+        <button id="begin-practice" class="btn" style="background:var(--indigo);color:#fff">Start Practice</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal logic & practice starter
+    (function(){
+      const modal = document.getElementById('practice-modal');
+      const openBtn = document.getElementById('start-practice-btn');
+      const closeBtn = document.getElementById('close-modal');
+      const cancelBtn = document.getElementById('cancel-modal');
+      const timeButtons = document.querySelectorAll('.time-select button');
+      const hintCheckbox = document.getElementById('hint-checkbox');
+      const beginBtn = document.getElementById('begin-practice');
+
+      let selectedTime = 30;
+      // keep state synced with UI
+      timeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          timeButtons.forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedTime = parseInt(btn.getAttribute('data-time'), 10);
+        });
+      });
+
+      function openModal(e){
+        e && e.preventDefault();
+        modal.style.display = 'flex';
+        // set defaults from previous if any
+        const prev = localStorage.getItem('ascendia_practice_settings');
+        if(prev){
+          try {
+            const s = JSON.parse(prev);
+            selectedTime = s.time || selectedTime;
+            // mark active button
+            timeButtons.forEach(b => b.classList.toggle('active', parseInt(b.getAttribute('data-time'),10) === selectedTime));
+            hintCheckbox.checked = !!s.hints;
+          } catch(e){}
+        }
+      }
+      function closeModal(){
+        modal.style.display = 'none';
+      }
+
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+
+      beginBtn.addEventListener('click', () => {
+        const hintsOn = !!hintCheckbox.checked;
+        // persist settings (so practice page can read them)
+        const settings = { time: selectedTime, hints: hintsOn, mode: 'task2' };
+        localStorage.setItem('ascendia_practice_settings', JSON.stringify(settings));
+        // navigate to essay page in practice mode with query params
+        const url = new URL(window.location.origin + '/practice.html');
+        url.searchParams.set('practice', 'task2');
+        url.searchParams.set('time', String(selectedTime));
+        url.searchParams.set('hints', hintsOn ? '1' : '0');
+        // close modal then navigate
+        closeModal();
+        // small delay so close animation (if any) feels smooth
+        setTimeout(()=>{ window.location.href = url.toString(); }, 150);
+      });
+
+      // keyboard accessibility: open modal with Enter on focused CTA
+      openBtn.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(); }
+      });
+    })();
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Essay Checking | Ascendia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --indigo: #3A0CA3;
+      --gold: #FFBE0B;
+      --slate: #6C757D;
+      --muted: #7a8087;
+      --card-bg: #ffffff;
+      --soft: rgba(15,23,42,0.04);
+      --radius: 12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      margin:0;
+      color:var(--slate);
+      background: linear-gradient(135deg, #EAF6FF 0%, #FFFDF0 100%);
+      padding:1.5rem;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .container{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 340px;gap:1.6rem;align-items:start}
+
+    header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}
+    header h1{font-family:'Space Grotesk',sans-serif;color:var(--indigo);font-size:1.4rem;margin:0}
+    header a{color:var(--indigo);text-decoration:none;font-weight:600}
+
+    .card{background:var(--card-bg);border-radius:var(--radius);padding:1rem;border:1px solid var(--soft);box-shadow:0 10px 30px rgba(16,24,40,0.06)}
+
+    main.form-card{padding:1.15rem}
+    label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:.35rem}
+    input[type=email], textarea, input[type=file]{width:100%;padding:.7rem;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:transparent;font-size:.95rem}
+    textarea{min-height:140px;resize:vertical}
+
+    .actions{display:flex;gap:.6rem;align-items:center;margin-top:.6rem}
+    .btn{padding:.55rem .95rem;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn.primary{background:linear-gradient(90deg,var(--gold),#f39c12);color:var(--indigo)}
+    .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06);color:var(--indigo)}
+
+    .meta{font-size:.88rem;color:var(--muted);margin-top:.5rem}
+
+    .sidebar{position:sticky;top:1.5rem}
+    .tips h3{margin:.1rem 0 .6rem 0;color:var(--indigo);font-family:'Space Grotesk',sans-serif}
+    .tip{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.6rem}
+    .badge{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--gold),#f4a261);display:grid;place-items:center;font-weight:700;color:#fff}
+    .tip p{margin:0;color:var(--muted);font-size:.95rem}
+
+    .bands{margin-top:1rem}
+    .band{padding:.6rem;border-radius:10px;border:1px solid rgba(15,23,42,0.04);background:linear-gradient(180deg,#fff,#fbfbfd);margin-bottom:.6rem}
+    .band h4{margin:.1rem;color:var(--indigo)}
+    .band p{margin:.2rem 0;color:var(--muted);font-size:.9rem}
+
+    .feedback{margin-top:1rem;padding:1rem;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfbfd);border:1px solid rgba(15,23,42,0.04)}
+    .score{font-size:1.9rem;font-weight:800;color:var(--indigo)}
+    .prob{color:var(--muted);font-size:.95rem}
+
+    .counter{font-size:.85rem;color:var(--muted);text-align:right;margin-top:.25rem}
+
+    .accordion button{width:100%;text-align:left;padding:.6rem;border:0;background:transparent;color:inherit;cursor:pointer}
+    .acc-panel{max-height:0;overflow:hidden;transition:max-height .26s ease;padding:0 .6rem}
+    .acc-open .acc-panel{padding-top:.4rem;max-height:260px}
+
+    @media (max-width:960px){.container{grid-template-columns:1fr}.sidebar{position:static}}
+
+    /* decorative accents to match main site: subtle circles */
+    .accent-shape{position:fixed;opacity:0.12;pointer-events:none;border-radius:50%;z-index:0}
+    .accent-shape.a{width:260px;height:260px;top:-40px;right:-40px;background:var(--gold)}
+    .accent-shape.b{width:300px;height:300px;bottom:-70px;left:-90px;background:var(--indigo)}
+
+    @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="accent-shape a" aria-hidden="true"></div>
+  <div class="accent-shape b" aria-hidden="true"></div>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>Essay Checking — Ascendia</h1>
+        <div class="meta">Keep the light, friendly Ascendia look — this page matches your main site style.</div>
+      </div>
+      <div>
+        <a href="ascendia_main_page_updated.html">⬅ Back to Home</a>
+      </div>
+    </header>
+
+    <main class="card form-card" aria-labelledby="submit-heading">
+      <h2 id="submit-heading" style="margin:0 0 .6rem 0;color:var(--indigo);font-family:'Space Grotesk',sans-serif;font-size:1.05rem">Submit Your Essay</h2>
+
+      <form id="essay-form" aria-describedby="process-meta">
+        <label for="email">Your email</label>
+        <input type="email" id="email" placeholder="you@example.com" required />
+
+        <label for="essay-text">Paste your essay</label>
+        <textarea id="essay-text" rows="8" placeholder="Paste your essay here (250–400 words recommended)..." required></textarea>
+        <div class="counter" id="char-count">0 characters</div>
+
+        <div class="actions">
+          <button class="btn primary" id="analyze">Get instant tips</button>
+          <button type="submit" class="btn ghost" id="submit-btn">Send for full review</button>
+        </div>
+        <div class="meta" id="process-meta">Instant tips are AI-generated suggestions for practice. Full review sends your essay to the tutor team.</div>
+
+        <div class="feedback" id="feedback" aria-live="polite" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="score" id="predicted-band">—</div>
+              <div class="prob" id="predicted-explain">Estimated band (coherence, lexical resource, grammar).</div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Quick actions</div>
+              <button class="btn ghost" id="download-feedback">Download</button>
+            </div>
+          </div>
+
+          <div id="quick-suggestions" style="margin-top:.8rem;color:var(--muted)"></div>
+        </div>
+      </form>
+    </main>
+
+    <aside class="sidebar">
+      <div class="card tips">
+        <h3>Quick Tips</h3>
+        <div class="tip"><div class="badge">1</div><p><strong>Plan first:</strong> spend 3–5 minutes outlining — one idea per paragraph.</p></div>
+        <div class="tip"><div class="badge">2</div><p><strong>Variety:</strong> use a mix of sentence lengths and precise vocabulary.</p></div>
+        <div class="tip"><div class="badge">3</div><p><strong>Link naturally:</strong> use cohesive devices but avoid overusing the same words.</p></div>
+
+        <div class="bands">
+          <h4 style="margin:.6rem 0 .4rem 0;color:var(--indigo)">Band descriptors (short)</h4>
+          <div class="band"><h4>Band 9</h4><p>Fully addresses the task; fluent, accurate grammar; sophisticated vocabulary; cohesive and natural.</p></div>
+          <div class="band"><h4>Band 7–8</h4><p>Addresses task well; logical progression; occasional errors that don't impede meaning.</p></div>
+          <div class="band"><h4>Band 6</h4><p>Generally effective but with noticeable inaccuracies; limited flexibility in expression.</p></div>
+          <div class="band"><h4>Band 5 or below</h4><p>Insufficient task response; frequent coherence and grammar breakdowns.</p></div>
+        </div>
+
+      </div>
+
+      <div style="height:1rem"></div>
+
+      <div class="card">
+        <h3 style="margin:0 0 .6rem 0;color:var(--indigo);font-family:'Space Grotesk',sans-serif">Band Breakdown (click)</h3>
+        <div class="accordion" id="band-acc">
+          <div class="acc-item"><button data-index="1">Band 9 — What it looks like</button><div class="acc-panel"><p class="muted">Precise vocabulary, natural cohesion, and near-error-free grammar.</p></div></div>
+          <div class="acc-item"><button data-index="2">Band 7 — Common features</button><div class="acc-panel"><p class="muted">Clear central topic, good vocabulary range, occasional grammar slips.</p></div></div>
+          <div class="acc-item"><button data-index="3">Band 6 — Watch out for</button><div class="acc-panel"><p class="muted">Repetition, unclear paragraphing, and grammar errors affecting clarity.</p></div></div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <script>
+    // UX & demo logic adapted to light theme
+    const essay = document.getElementById('essay-text');
+    const charCount = document.getElementById('char-count');
+    const analyzeBtn = document.getElementById('analyze');
+    const feedbackBox = document.getElementById('feedback');
+    const predictedBand = document.getElementById('predicted-band');
+    const suggestions = document.getElementById('quick-suggestions');
+    const downloadBtn = document.getElementById('download-feedback');
+
+    essay.addEventListener('input', ()=>{
+      const n = essay.value.length;
+      charCount.textContent = n + ' characters';
+    });
+
+    analyzeBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const text = essay.value.trim();
+      if(!text){ alert('Please paste your essay first.'); return; }
+
+      // lightweight heuristic estimator (demo only)
+      let score = 6;
+      const words = text.split(/\s+/).filter(Boolean).length;
+      if(words > 250) score += 1;
+      const tokens = text.toLowerCase().match(/\b\w+\b/g) || [];
+      const variety = new Set(tokens).size / Math.max(1, words);
+      if(variety > 0.44) score += 1;
+      const commas = (text.match(/,/g) || []).length;
+      if(commas > 6) score += 0.8;
+      if(/\btherefore|however|moreover|nevertheless\b/i.test(text)) score += 0.4;
+      if(score > 9) score = 9;
+
+      predictedBand.textContent = (Math.round(score*10)/10).toFixed(1);
+      feedbackBox.style.display = 'block';
+
+      const tips = [];
+      if(words < 220) tips.push('Add more supporting examples — aim for ~250–350 words.');
+      if(variety < 0.35) tips.push('Vary vocabulary — replace common words with precise synonyms.');
+      if(commas < 3) tips.push('Combine short sentences for better variety.');
+      if(/[\.]\s*[a-z]/.test(text)) tips.push('Capitalize sentence starts after full stops.');
+
+      suggestions.innerHTML = '';
+      if(tips.length===0){ suggestions.innerHTML = '<div class="muted">No immediate low-hanging issues found. Focus on precision.</div>'; }
+      else{ const ul=document.createElement('ul'); ul.style.margin='0'; ul.style.paddingLeft='1.1rem'; ul.style.color='var(--muted)'; tips.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li)}); suggestions.appendChild(ul); }
+
+      downloadBtn.onclick = ()=>{
+        const content = `Estimated band: ${predictedBand.textContent}\n\nQuick suggestions:\n- ${tips.join('\n- ')}`;
+        const blob = new Blob([content],{type:'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'ascendia_feedback.txt'; document.body.appendChild(a); a.click(); a.remove();
+      }
+    });
+
+    document.getElementById('essay-form').addEventListener('submit', (e)=>{ e.preventDefault(); alert('Full review submitted. This is a demo — hook up your backend to process uploads.'); });
+
+    // accordion
+    document.querySelectorAll('#band-acc .acc-item button').forEach(btn=>{ btn.addEventListener('click', ()=>{ btn.parentElement.classList.toggle('acc-open'); }) });
+
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ document.querySelectorAll('*').forEach(n=>n.style.transition='none') }
+  </script>
+</body>
+</html>
